@@ -10,7 +10,7 @@ Instructions
 1. Install java jdk from [bit.ly/javajdk8](https://bit.ly/javajdk8)
 2. Install it with admin priveleges with default options
 3. Download the STIG viewer [bit.ly/stigview](https://bit.ly/stigview)
-4. Download the latest STIG SCAP content from [DISA](http://iase.disa.mil/stigs/scap/Pages/index.aspx). As of this document, the latest version for RHEL 6 is Revision 1, release 11.
+4. Download the latest STIG SCAP content from [DISA](http://iase.disa.mil/stigs/scap/Pages/index.aspx). As of this document, the latest version for RHEL 6 is Revision 1, release 11 which can be downloaded [here](http://iasecontent.disa.mil/stigs/zip/Apr2016/U_RedHat_6_V1R11_STIG_SCAP_1-1_Benchmark.zip).
 5. Extract the zip file you just downloaded
 6. Open the STIG viewer jar file you downloaded earlier.
 7. Click on `File` > `Import STIG`, and directory browser should appear
