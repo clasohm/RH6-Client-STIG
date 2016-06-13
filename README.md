@@ -15,3 +15,5 @@ Instructions
 6. Open the STIG viewer jar file you downloaded earlier.
 7. Click on `File` > `Import STIG`, and directory browser should appear
 8. Navigate the the location where you extracted the SCAP content and highlight all of the XML files (there should be 4 of them) and click open.
+9. Your STIG viewer should now be populated
+
