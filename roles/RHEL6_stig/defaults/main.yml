@@ -67,6 +67,9 @@ rhel6stig_is_mail_relay: false
 # Set to true is sytem is an LDAP server
 rhel6stig_ldap_server: false
 
+# Set to true to allow the openldap-servers package to be installed
+rhel6stig_openldap_server_required: false
+
 # By default will create a random password with the same grub-crypt --sha-512
 # mechanism rebuilt as an Ansible module.
 # The system will make a call to python to generate a random salt
