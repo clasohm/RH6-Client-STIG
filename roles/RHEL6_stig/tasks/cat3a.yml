@@ -30,6 +30,40 @@
       - patch
 
 # V-38438 grub
+- name: "LOW | V-38438 | AUDIT | Auditing must be enabled at boot by setting a kernel parameter."
+  command: grep audit=1 /etc/grub.conf
+  register: grub_audit_audit
+  always_run: yes
+  ignore_errors: yes
+  changed_when: no
+  tags:
+      - cat3
+      - low
+      - V-38438
+      - grub
+      - audit
+
+# change the audit=X option in lines that have it
+- name: "LOW | V-38438 | PATCH | Auditing must be enabled at boot by setting a kernel parameter."
+  command: sed -r -i 's/^(\s*kernel .*)\s+audit=[^ ]+(.*)$/\1 audit=1\2/' /boot/grub/grub.conf
+  when: grub_audit_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38438
+      - grub
+      - patch
+
+# append the audit=1 option to lines that don't have it
+- name: "LOW | V-38438 | PATCH | Auditing must be enabled at boot by setting a kernel parameter."
+  command: sed -r -i '/^\s*kernel .*audit=/! s/^(\s*kernel .*)/\1 audit=1/'  /boot/grub/grub.conf
+  when: grub_audit_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38438
+      - grub
+      - patch
 
 # V-38447 rpm hashes
 - name: "LOW | V-38447, V-38452, V-38453, V-38454 | AUDIT | Verify all rpm packages and store output for later use."
