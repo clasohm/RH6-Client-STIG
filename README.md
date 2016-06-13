@@ -17,3 +17,6 @@ Instructions
 8. Navigate the the location where you extracted the SCAP content and highlight all of the XML files (there should be 4 of them) and click open.
 9. Your STIG viewer should now be populated
 
+## Content Creation
+1. Check if the rule has already been addressed in the lockdown project [here](https://bit.ly/mpgstig)
+2. If so, then copy all of the bits that are related to your desired rule into the proper place in this repository
