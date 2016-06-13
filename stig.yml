@@ -1,0 +1,6 @@
+- name: Apply STIG
+  hosts: rhel6
+  roles:
+    - role: RHEL6_stig
+      rhel6stig_cat3: yes
+      rhel6stig_cat2: yes
