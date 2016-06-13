@@ -1,0 +1,560 @@
+---
+# CAT III findings
+
+- name: "LOW | V-38437 | AUDIT | Automated file system mounting tools must not be enabled unless needed."
+  command: chkconfig 'autofs' --list
+  register: autofs_service_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38437
+      - autofs
+      - services
+      - audit
+
+- name: "LOW | V-38437 | PATCH | Automated file system mounting tools must not be enabled unless needed."
+  service:
+      name: autofs
+      state: stopped
+      enabled: no
+  when: "':on' in autofs_service_audit.stdout"
+  tags:
+      - cat3
+      - low
+      - V-38437
+      - autofs
+      - services
+      - patch
+
+# V-38438 grub
+
+# V-38447 rpm hashes
+- name: "LOW | V-38447, V-38452, V-38453, V-38454 | AUDIT | Verify all rpm packages and store output for later use."
+  command: rpm -Va
+  changed_when: false
+  failed_when: false
+  register: rpm_verify_packages
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38447
+      - V-38452
+      - V-38453
+      - V-38454
+      - audit
+
+- name: "LOW | V-38447 | AUDIT | The system package management tool must verify contents of all files associated with packages."
+  command: rpm -qf {{ item | regex_replace('^..5......\\s+(/.+)$', '\\1') }}
+  register: rpm_integrity_audit
+  when: item | match("^..5......[^c]*/.+$")
+  with_items: rpm_verify_packages.stdout_lines
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38447
+      - rpm
+      - audit
+
+- name: "LOW | V-38447 | PATCH | The system package management tool must verify contents of all files associated with packages."
+  command: yum reinstall -y {{ item.stdout }}
+  when: item|changed
+  with_items: rpm_integrity_audit.results
+  tags:
+      - cat3
+      - low
+      - V-38447
+      - rpm
+      - patch
+
+# V-38452 rpm system permissions
+- name: "LOW | V-38452 | AUDIT | The system package management tool must verify permissions on all files and directories associated with packages."
+  command: rpm -qf {{ item | regex_replace('^.M.......\s+[a-z]?\s+(/.+)$', '\1') }}
+  when: item | match("^.M.......\\s+.*?/.+$")
+  register: rpm_file_permissions_audit
+  with_items: rpm_verify_packages.stdout_lines
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38452
+      - rpm
+      - audit
+
+- name: "LOW | V-38452 | PATCH | The system package management tool must verify permissions on all files and directories associated with packages."
+  command: rpm --setperms {{ item.stdout }}
+  when: item|changed
+  with_items: rpm_file_permissions_audit.results
+  tags:
+      - cat3
+      - low
+      - V-38452
+      - rpm
+      - patch
+
+# V-38453 rpm group perms
+- name: "LOW | V-38453 | AUDIT | The system package management tool must verify group-ownership on all files and directories associated with packages."
+  command: rpm -qf {{ item | regex_replace('^......G..\\s+[a-z]?\\s*(/.+)$', '\\1') }}
+  when: item | match("^......G..\\s+.*?/.+$")
+  register: rpm_group_ownership_audit
+  with_items: rpm_verify_packages.stdout_lines
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38453
+      - rpm
+      - audit
+
+- name: "LOW | V-38453 | PATCH | The system package management tool must verify group-ownership on all files and directories associated with packages."
+  command: rpm --setugids {{ item.stdout }}
+  when: item|changed
+  with_items: rpm_group_ownership_audit.results
+  tags:
+      - cat3
+      - low
+      - V-38453
+      - rpm
+      - audit
+
+# V-38454 rpm user perms
+- name: "LOW | V-38454 | AUDIT | The system package management tool must verify ownership on all files and directories associated with packages."
+  command: rpm -qf {{ item | regex_replace('^.....U...\\s+[a-z]?\\s*(/.+)$', '\\1') }}
+  when: item | match("^.....U...\\s+.*?/.+$")
+  register: rpm_group_ownership_audit
+  with_items: rpm_verify_packages.stdout_lines
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38454
+      - rpm
+      - audit
+
+- name: "LOW | V-38454 | PATCH | The system package management tool must verify ownership on all files and directories associated with packages."
+  command: rpm --setugids {{ item.stdout }}
+  when: item|changed
+  with_items: rpm_group_ownership_audit.results
+  tags:
+      - cat3
+      - low
+      - V-38454
+      - rpm
+      - audit
+
+# V-38455 see not_automated.yml
+
+# V-38456 see not_automated.yml
+
+# V-38460 NFS thing
+- name: "LOW | V-38460 | AUDIT | The NFS server must not have the all_squash option enabled."
+  command: grep all_squash /etc/exports
+  register: nfs_all_squash_disabled_audit
+  failed_when: nfs_all_squash_disabled_audit.rc == 2
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38460
+      - nfs
+      - audit
+
+- name: "LOW | V-38460 | PATCH | The NFS server must not have the all_squash option enabled."
+  replace:
+      backup: no
+      dest: /etc/exports
+      regexp: ',?all_squash'
+  tags:
+      - cat3
+      - low
+      - V-38460
+      - nfs
+      - patch
+  notify: restart nfs
+
+# V-38463 see not_automated.yml
+
+# V-38467 see not_automated.yml
+
+# V-38471 audispd syslog plugin
+- name: "LOW | V-38471 | AUDIT | The system must forward audit records to the syslog service."
+  command: grep '^active' /etc/audisp/plugins.d/syslog.conf
+  register: auditd_syslog_output_audit
+  failed_when: auditd_syslog_output_audit.rc == 2
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38471
+      - auditd
+      - audit
+
+- name: "LOW | V-38471 | PATCH | The system must forward audit records to the syslog service."
+  lineinfile:
+      state: present
+      backup: no
+      dest: /etc/audisp/plugins.d/syslog.conf
+      regexp: '^#?active'
+      line: 'active = yes'
+  notify: restart auditd
+  tags:
+      - cat3
+      - low
+      - V-38471
+      - auditd
+      - patch
+
+# V-38473 see not_automated.yml
+
+# V-38474 lock gui
+- name: "LOW | V-38474 | AUDIT | Low  The system must allow locking of graphical desktop sessions."
+  command: gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --get /apps/gnome_settings_daemon/keybindings/screensaver
+  when: rhel6stig_xwindows_required
+  register: gui_screen_lock_hotkey_audit
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38474
+      - screen_lock
+      - audit
+
+- name: "LOW | V-38474 | PATCH | Low  The system must allow locking of graphical desktop sessions."
+  command: gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type string --set /apps/gnome_settings_daemon/keybindings/screensaver "<Ctrl><Alt>l"
+  when: rhel6stig_xwindows_required
+  tags:
+      - cat3
+      - low
+      - V-38474
+      - screen_lock
+      - patch
+
+# V-38478 rhnsd service
+- name: "LOW | V-38478 | AUDIT | The Red Hat Network Service (rhnsd) service must not be running, unless using RHN or an RHN Satellite."
+  command: chkconfig 'rhnsd' --list
+  register: rhnsd_service_audit
+  always_run: yes
+  changed_when: false
+  ignore_errors: yes
+  tags:
+      - cat3
+      - low
+      - V-38478
+      - rhnsd
+      - audit
+
+- name: "LOW | V-38478 | PATCH | The Red Hat Network Service (rhnsd) service must not be running, unless using RHN or an RHN Satellite."
+  shell: chkconfig rhnsd off && chkconfig rhnsd --list
+  register: rhnsd_service_disable
+  when: "rhnsd_service_audit.rc == 0 and ':on' in rhnsd_service_audit.stdout"
+  failed_when: "rhnsd_service_disable.rc != 0 and ':on' in rhnsd_service_disable.stdout"
+  tags:
+      - cat3
+      - low
+      - V-38478
+      - rhnsd
+      - patch
+
+- name: "LOW | V-38478 | PATCH | The Red Hat Network Service (rhnsd) service must not be running, unless using RHN or an RHN Satellite."
+  command: service rhnsd stop
+  register: rhnsd_service_stop
+  when: rhnsd_service_audit.rc == 0
+  failed_when: rhnsd_service_stop.rc != 0 and rhnsd_service_stop.rc != 6
+  changed_when: "rhnsd_service_stop.rc == 0 and 'Stopping' in rhnsd_service_stop.stdout and 'OK' in rhnsd_service_stop.stdout"
+  tags:
+      - cat3
+      - low
+      - V-38478
+      - rhnsd
+      - patch
+
+# V-38480 pass warn age
+- name: "LOW | V-38480 | AUDIT | Users must be warned 7 days in advance of password expiration."
+  command: grep '^PASS_WARN_AGE' /etc/login.defs
+  register: logindefs_pass_warn_age_audit
+  failed_when: logindefs_pass_warn_age_audit.rc == 2
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38480
+      - passwords
+      - audit
+
+- name: "LOW | V-38480 | PATCH | Users must be warned 7 days in advance of password expiration."
+  lineinfile:
+      state: present
+      backup: no
+      dest: /etc/login.defs
+      regexp: '^#?PASS_WARN_AGE'
+      line: 'PASS_WARN_AGE\t7'
+  tags:
+      - cat3
+      - low
+      - V-38480
+      - passwords
+      - patch
+
+# V-38482 pam cracklib digits
+
+# V-38487 gpgcheck
+- name: "LOW | V-38487 | AUDIT | The system package management tool must cryptographically verify the authenticity of all software packages during installation."
+  command: find /etc/yum.repos.d/ -exec grep -ls '^gpgcheck=0' {} \;
+  changed_when: false
+  always_run: yes
+  register: repo_d_gpgcheck_check_audit
+  tags:
+      - cat3
+      - low
+      - V-38487
+      - rpm
+      - audit
+      - gpgcheck
+
+- name: "LOW | V-38487 | PATCH | The system package management tool must cryptographically verify the authenticity of all software packages during installation."
+  replace:
+      backup: no
+      dest: '{{ item }}'
+      regexp: '^gpgcheck=0'
+      replace: 'gpgcheck=1'
+  with_items: repo_d_gpgcheck_check_audit.stdout_lines
+  tags:
+      - cat3
+      - low
+      - V-38487
+      - rpm
+      - gpgcheck
+      - patch
+
+# V-38494 securetty
+- name: "LOW | V-38494 | AUDIT | The system must prevent the root account from logging in from serial consoles."
+  command: grep '^ttyS[0-9]' /etc/securetty
+  register: securetty_serial_consoles_audit
+  failed_when: securetty_serial_consoles_audit.rc == 2
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38494
+      - secure_tty
+      - audit
+
+- name: "LOW | V-38494 | PATCH | The system must prevent the root account from logging in from serial consoles."
+  lineinfile:
+      state: absent
+      dest: /etc/securetty
+      regexp: '^ttyS[0-9]'
+      backup: no
+  tags:
+      - cat3
+      - low
+      - V-38494
+      - secure_tty
+      - patch
+
+# V-38516 modprobe rds
+- name: "LOW | V-38516 | AUDIT | The Reliable Datagram Sockets (RDS) protocol must be disabled unless required."
+  shell: find /etc/modprobe.* -type f -name '*.conf' -exec grep -ls '^install rds /bin/(true|false)' {} \;
+  register: modprobe_disable_rds_audit
+  failed_when: false
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38516
+      - rds
+      - kernel_modules
+      - audit
+
+- name: "LOW | V-38516 | PATCH | The Reliable Datagram Sockets (RDS) protocol must be disabled unless required."
+  copy:
+      backup: no
+      src: disable-rds.conf
+      dest: /etc/modprobe.d/disable-rds.conf
+      owner: root
+      group: root
+      mode: 0644
+  tags:
+      - cat3
+      - low
+      - V-38516
+      - rds
+      - kernel_modules
+      - patch
+
+# V-38522 auditd timeofday changes
+
+# V-38525 auditd stime change
+
+# V-38527 auditd settime
+
+# V-38528 log martians
+- name: "LOW | V-38528 | AUDIT The system must log Martian packets."
+  command: sysctl net.ipv4.conf.all.log_martians
+  register: sysctl_log_martians_audit
+  failed_when: false
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38528
+      - kernel_parameters
+      - network
+      - log_martians
+      - audit
+
+- name: "LOW | V-38528 | PATCH The system must log Martian packets."
+  sysctl:
+      name: net.ipv4.conf.all.log_martians
+      value: 1
+      state: present
+      reload: yes
+      sysctl_set: yes
+      ignoreerrors: yes
+  tags:
+      - cat3
+      - low
+      - V-38528
+      - kernel_parameters
+      - network
+      - log_martians
+      - patch
+
+# V-38530 auditd localtime
+
+# V-38531 auditd account creation
+
+# V-38533 icmp redirect ignore
+- name: "LOW | V-38533 | AUDIT | The system must ignore ICMPv4 redirect messages by default."
+  command: sysctl net.ipv4.conf.default.accept_redirects
+  register: sysctl_accept_redirects_audit
+  failed_when: false
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38533
+      - kernel_parameters
+      - network
+      - icmp_redirects
+      - audit
+
+- name: "LOW | V-38533 | PATCH | The system must ignore ICMPv4 redirect messages by default."
+  sysctl:
+      name: net.ipv4.conf.default.accept_redirects
+      value: 0
+      state: present
+      reload: yes
+      sysctl_set: yes
+      ignoreerrors: yes
+  tags:
+      - cat3
+      - low
+      - V-38533
+      - kernel_parameters
+      - network
+      - icmp_redirects
+      - patch
+
+# V-38534 auditd account mod
+
+# V-38535 icmp broadcast ignore
+- name: "LOW | V-38535 | AUDIT | The system must not respond to ICMPv4 sent to a broadcast address."
+  command: sysctl net.ipv4.icmp_echo_ignore_broadcasts
+  register: sysctl_ignore_broadcasts_audit
+  failed_when: false
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38535
+      - kernel_parameters
+      - network
+      - ignore_broadcasts
+      - audit
+
+- name: "LOW | V-38535 | PATCH | The system must not respond to ICMPv4 sent to a broadcast address."
+  sysctl:
+      name: net.ipv4.icmp_echo_ignore_broadcasts
+      value: 1
+      state: present
+      reload: yes
+      sysctl_set: yes
+      ignoreerrors: yes
+  tags:
+      - cat3
+      - low
+      - V-38535
+      - kernel_parameters
+      - network
+      - ignore_broadcasts
+      - patch
+
+# V-38536 auditd account disable
+
+# V-38537 icmp bogus ignore
+- name: "LOW | V-38537 | AUDIT | The system must ignore ICMPv4 bogus error responses."
+  command: sysctl net.ipv4.icmp_ignore_bogus_error_responses
+  register: sysctl_ignore_bogus_error_responses_audit
+  failed_when: false
+  changed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38537
+      - kernel_parameters
+      - network
+      - ignore_broadcasts
+      - audit
+
+- name: "LOW | V-38537 | PATCH | The system must ignore ICMPv4 bogus error responses."
+  sysctl:
+      name: net.ipv4.icmp_ignore_bogus_error_responses
+      value: 1
+      state: present
+      reload: yes
+      sysctl_set: yes
+      ignoreerrors: yes
+  tags:
+      - cat3
+      - low
+      - V-38537
+      - kernel_parameters
+      - network
+      - ignore_bogus_error
+      - patch
+
+# V-38538 auditd account term
+
+# V-38540 auditd network change
+
+# V-38541 auditd selinux change
+
+# V-38543 auditd chmod
+
+# V-38545 auditd chown
+
+# V-38547 auditd fchmod
+
+# V-38550 auditd fchmodat
+
+# V-38552 auditd fchown
+
+# V-38554 auditd fchownat
+
+# V-38556 auditd
+
+# V-38557 auditd
