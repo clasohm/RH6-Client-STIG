@@ -1,0 +1,2 @@
+[rhel6]
+52.53.175.62 ansible_user=ec2-user
