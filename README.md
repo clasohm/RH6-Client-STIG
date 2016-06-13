@@ -7,9 +7,9 @@ Instructions
 
 ## STIG Viewer Setup
 
-1. Install java jdk from [bit.ly/javajdk8](bit.ly/javajdk8)
+1. Install java jdk from [bit.ly/javajdk8](https://bit.ly/javajdk8)
 2. Install it with admin priveleges with default options
-3. Download the STIG viewer [bit.ly/stigview](bit.ly/stigview)
+3. Download the STIG viewer [bit.ly/stigview](https://bit.ly/stigview)
 4. Download the latest STIG SCAP content from [DISA](http://iase.disa.mil/stigs/scap/Pages/index.aspx). As of this document, the latest version for RHEL 6 is Revision 1, release 11.
 5. Extract the zip file you just downloaded
 6. Open the STIG viewer jar file you downloaded earlier.
