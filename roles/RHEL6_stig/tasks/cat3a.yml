@@ -337,6 +337,64 @@
       - patch
 
 # V-38482 pam cracklib digits
+- name: "LOW | V-38482 | AUDIT | The system must require passwords to contain at least one numeric character."
+  command: grep /etc/pam.d/password-auth-ac
+  register: password_auth_dcredit_audit
+  always_run: yes
+  ignore_errors: yes
+  changed_when: no
+  tags:
+      - cat3
+      - low
+      - V-38482
+      - password
+      - audit
+
+- name: "LOW | V-38482 | AUDIT | The system must require passwords to contain at least one numeric character."
+  command: grep /etc/pam.d/system-auth-ac
+  register: system_auth_dcredit_audit
+  always_run: yes
+  ignore_errors: yes
+  changed_when: no
+  tags:
+      - cat3
+      - low
+      - V-38482
+      - password
+      - audit
+
+- name: "LOW | V-38482 | PATCH | The system must require passwords to contain at least one numeric character."
+  pam:
+      service: password-auth-ac
+      type: password
+      control: requisite
+      pam_module: pam_cracklib.so
+      arguments: try_first_pass retry=3 type= dcredit=-1
+      state: present
+  when: password_auth_dcredit_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38482
+      - passwords
+      - patch
+
+- name: "LOW | V-38482 | PATCH | The system must require passwords to contain at least one numeric character."
+  pam:
+      service: system-auth-ac
+      type: password
+      control: requisite
+      pam_module: pam_cracklib.so
+      arguments: try_first_pass retry=3 type= dcredit=-1
+      state: present
+  when: system_auth_dcredit_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38482
+      - passwords
+      - patch
+
 
 # V-38487 gpgcheck
 - name: "LOW | V-38487 | AUDIT | The system package management tool must cryptographically verify the authenticity of all software packages during installation."
