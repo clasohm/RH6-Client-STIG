@@ -111,11 +111,11 @@
       - screen
       - patch
 
-# V-38608 sshd conf
+# V-38608 sshd ClientAliveInterval
 
-# V-38610 sshd conf
+# V-38610 sshd ClientAliveCountMax
 
-# V-38616 sshd conf
+# V-38616 sshd PermitUserEnvironment
 
 # V-38618 avahi-daemon
 - name: "LOW | V-38618 | AUDIT | The avahi service must be disabled."
@@ -160,8 +160,6 @@
       - services
       - patch
 
-# V-38624 logrotate
-
 # V-38627 remove openldap-server
 - name: "LOW | V-38627 | AUDIT | The openldap-servers package must not be installed unless required."
   command: rpm -q openldap-servers
@@ -188,9 +186,9 @@
       - openldap_server
       - audit
 
-# V-38635 auditd
+# V-38635 auditd adjtimex
 
-# V-38639 gconf
+# V-38639 gconf screensaver
 
 # V-38640 abrtd service
 - name: "LOW | V-38640 | AUDIT | The Automatic Bug Reporting Tool (abrtd) service must not be running."
@@ -460,17 +458,7 @@
 
 # V-38651 umask
 
-# V-38655 fstab noexec
-
 # V-38656 smb signing
-
-# V-38657 fstab sec
-
-# V-38659 see not_automated.yml
-
-# V-38661 see not_automated.yml
-
-# V-38662 see not_automated.yml
 
 # V-38669 postfix service
 - name: "LOW | V-38669 | AUDIT | The postfix service must be enabled for mail delivery."
@@ -586,13 +574,7 @@
       - xwindows
       - audit
 
-# V-38681 see not_automated.yml
-
-# V-38683 see not_automated.yml
-
 # V-38684 limits maxlogin
-
-# V-38685 temp accounts
 
 # V-38687 openswan install
 - name: "LOW | V-38687 | AUDIT | The system must provide VPN connectivity for communications over untrusted networks."
@@ -621,8 +603,6 @@
       - vpn
       - patch
 
-# V-38690 emergency accounts
-
 # V-38692 inactive acct set
 - name: "LOW | V-V-38692 | PATCH | Accounts must be locked upon 35 days of inactivity."
   lineinfile:
@@ -637,8 +617,6 @@
       - account
       - patch
 
-# V-38693 pam
-
 # V-38694 inactive acct set
 - name: "LOW | V-V-38694 | PATCH | The operating system must manage information system identifiers for users and devices by disabling the user identifier after an organization defined time period of inactivity."
   lineinfile:
@@ -652,10 +630,6 @@
       - V-38694
       - account
       - patch
-
-# V-38697 see not_automated.yml
-
-# V-38699 see not_automated.yml
 
 # V-38702 ftp logging
 - name: "LOW | V-38702 | AUDIT | The FTP daemon must be configured for logging or verbose mode."
