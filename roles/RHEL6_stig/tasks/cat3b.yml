@@ -53,7 +53,7 @@
 - name: "LOW | V-38583 | PATCH | The system boot loader configuration file(s) must have mode 0600 or less permissive." 
   file:
     path: /boot/grub/grub.conf
-    mode: 'u-x,g-rwx, o-rwx'
+    mode: 'u-x,g-rwx,o-rwx'
   tags:
     - cat3
     - low
