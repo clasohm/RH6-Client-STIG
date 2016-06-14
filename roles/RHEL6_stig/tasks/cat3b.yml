@@ -41,6 +41,7 @@
     name: xinetd
     state: stopped
     enabled: no
+  when: "'xinetd' in sysv_services.stdout"
   tags:
     - cat3
     - low
