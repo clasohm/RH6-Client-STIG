@@ -643,12 +643,6 @@
       - kernel_modules
       - patch
 
-- name: "set arch fact"
-  set_fact:
-      audit_arch: "b{{ ansible_architecture | regex_replace('.*(\\d\\d$)','\\1') }}"
-  tags:
-      - auditd
-
 # V-38522 auditd settimeofday
 # V-38527 auditd clock_settime
 - name: "LOW | V-38522, V-38527 | AUDIT | The audit system must be configured to audit all attempts to alter system time through settimeofday, clock_settime."
