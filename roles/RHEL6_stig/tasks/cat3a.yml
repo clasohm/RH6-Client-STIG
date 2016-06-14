@@ -646,7 +646,7 @@
 # V-38522 auditd settimeofday
 # V-38527 auditd clock_settime
 - name: "LOW | V-38522, V-38527 | AUDIT | The audit system must be configured to audit all attempts to alter system time through settimeofday, clock_settime."
-  command: grep audit_settime_rules /etc/audit/audit.rules
+  command: grep -e '-k audit_settime_rules' /etc/audit/audit.rules
   register: audit_settime_rules_audit
   changed_when: false
   failed_when: false
@@ -716,7 +716,7 @@
 
 # V-38530 auditd localtime
 - name: "LOW | V-38530 | AUDIT | The audit system must be configured to audit all attempts to alter system time through /etc/localtime."
-  command: grep /etc/localtime /etc/audit/audit.rules
+  command: grep -e '-k audit_localtime_rules' /etc/audit/audit.rules
   register: localtime_audit
   changed_when: false
   failed_when: false
@@ -749,7 +749,7 @@
 # V-38536 auditd account disable
 # V-38538 auditd account term
 - name: "LOW | V-38531, V-38534, V-38536, V-38538 | AUDIT | The operating system must automatically audit account creation, modification, disabling actions and termination."
-  command: grep audit_account_changes /etc/audit/audit.rules
+  command: grep -e '-k audit_account_changes' /etc/audit/audit.rules
   register: account_changes_audit
   changed_when: false
   failed_when: false
@@ -893,7 +893,7 @@
 
 # V-38541 auditd selinux change
 - name: "LOW | V-38541 | AUDIT | The audit system must be configured to audit modifications to the systems Mandatory Access Control (MAC) configuration (SELinux)."
-  command: grep MAC-policy /etc/audit/audit.rules
+  command: grep -e '-k MAC-policy' /etc/audit/audit.rules
   register: mac_policy_audit
   changed_when: false
   failed_when: false
@@ -935,7 +935,7 @@
 # V-38563 auditd removexattr
 # V-38565 auditd setxattr
 - name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557, V-38558, V-38559, V-38561, V-38563, V-38565 | AUDIT | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr, fsetxattr, lchown, lremovexattr, lsetxattr, removexattr, setxattr."
-  command: grep perm_mod /etc/audit/audit.rules
+  command: grep -e '-k perm_mod' /etc/audit/audit.rules
   register: perm_mod_audit
   changed_when: false
   failed_when: false
@@ -992,7 +992,7 @@
 
 # V-38568 auditd mount
 - name: "LOW | V-38568 | AUDIT | The audit system must be configured to audit successful file system mounts."
-  command: grep mount /etc/audit/audit.rules
+  command: grep -e '-k mount' /etc/audit/audit.rules
   register: mount_audit
   changed_when: false
   failed_when: false
@@ -1021,4 +1021,37 @@
       - V-38568
       - auditd
       - mount
+      - patch
+
+# V-38575 auditd delete
+- name: "LOW | V-38575 | AUDIT | The audit system must be configured to audit user deletions of files and programs."
+  command: grep -e '-k delete' /etc/audit/audit.rules
+  register: delete_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38575
+      - auditd
+      - delete
+      - audit
+
+- name: "LOW | V-38575 | PATCH | The audit system must be configured to audit user deletions of files and programs."
+  blockinfile:
+      state: present
+      backup: no
+      dest: /etc/audit/audit.rules
+      marker: '# {mark} DELETE RULES'
+      block: |
+        -a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete 
+        -a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid=0 -k delete
+  when: delete_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38575
+      - auditd
+      - delete
       - patch
