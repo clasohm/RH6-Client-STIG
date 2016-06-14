@@ -181,8 +181,10 @@
       - audit
 
 # V-38455 see not_automated.yml
+# LOW | V-38455 | AUDIT | The system must use a separate file system for /tmp
 
 # V-38456 see not_automated.yml
+# LOW | V-38456 | AUDIT | The system must use a separate file system for /var
 
 # V-38460 NFS thing
 - name: "LOW | V-38460 | AUDIT | The NFS server must not have the all_squash option enabled."
@@ -212,8 +214,10 @@
   notify: restart nfs
 
 # V-38463 see not_automated.yml
+# LOW | V-38463 | AUDIT | The system must use a separate file system for /var/log
 
 # V-38467 see not_automated.yml
+# LOW | V-38467 | AUDIT | The system must use a separate file system for /var/log/audit
 
 # V-38471 audispd syslog plugin
 - name: "LOW | V-38471 | AUDIT | The system must forward audit records to the syslog service."
@@ -245,6 +249,7 @@
       - patch
 
 # V-38473 see not_automated.yml
+# LOW | V-38473 | AUDIT | The system must use a separate file system for user home directories
 
 # V-38474 lock gui
 - name: "LOW | V-38474 | AUDIT | Low  The system must allow locking of graphical desktop sessions."
@@ -394,7 +399,6 @@
       - V-38482
       - passwords
       - patch
-
 
 # V-38487 gpgcheck
 - name: "LOW | V-38487 | AUDIT | The system package management tool must cryptographically verify the authenticity of all software packages during installation."
@@ -616,7 +620,6 @@
       - account_changes
       - patch
 
-
 # V-38533 icmp redirect ignore
 - name: "LOW | V-38533 | AUDIT | The system must ignore ICMPv4 redirect messages by default."
   command: sysctl net.ipv4.conf.default.accept_redirects
@@ -717,6 +720,7 @@
       - patch
 
 # V-38540 auditd network change
+# no longer exists in STIG v11
 
 # V-38541 auditd selinux change
 
