@@ -17,8 +17,14 @@
     - "-w /sbin/insmod -p x -k modules"
     - "-w /sbin/rmmod -p x -k modules"
     - "-w /sbin/modprobe -p x -k modules"
-    - "-a always,exit -F arch={{ arch}} -S init_module -S delete_module -k modules"
-
+    - "-a always,exit -F arch={{ audit_arch }} -S init_module -S delete_module -k modules"
+  tags:
+    - cat3
+    - low
+    - V-38580
+    - auditd
+    - patch
+  
 - name: "LOW | V-38581 | PATCH | The system boot loader configuration file(s) must be group-owned by root."
   file:
     path: /boot/grub/grub.conf
