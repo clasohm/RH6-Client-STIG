@@ -1,4 +1,3 @@
 ---
 - include: prelim.yml
-- include: cat3a.yml
-- include: cat3b.yml
+- include: cat3.yml
