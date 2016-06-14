@@ -202,7 +202,6 @@
 
 - name: "LOW | V-38460 | PATCH | The NFS server must not have the all_squash option enabled."
   replace:
-      backup: no
       dest: /etc/exports
       regexp: ',?all_squash'
   tags:
@@ -236,7 +235,6 @@
 - name: "LOW | V-38471 | PATCH | The system must forward audit records to the syslog service."
   lineinfile:
       state: present
-      backup: no
       dest: /etc/audisp/plugins.d/syslog.conf
       regexp: '^#?active'
       line: 'active = yes'
@@ -330,7 +328,6 @@
 - name: "LOW | V-38480 | PATCH | Users must be warned 7 days in advance of password expiration."
   lineinfile:
       state: present
-      backup: no
       dest: /etc/login.defs
       regexp: '^#?PASS_WARN_AGE'
       line: 'PASS_WARN_AGE\t7'
@@ -572,7 +569,6 @@
 
 - name: "LOW | V-38487 | PATCH | The system package management tool must cryptographically verify the authenticity of all software packages during installation."
   replace:
-      backup: no
       dest: '{{ item }}'
       regexp: '^gpgcheck=0'
       replace: 'gpgcheck=1'
@@ -604,7 +600,6 @@
       state: absent
       dest: /etc/securetty
       regexp: '^ttyS[0-9]'
-      backup: no
   tags:
       - cat3
       - low
@@ -629,7 +624,6 @@
 
 - name: "LOW | V-38516 | PATCH | The Reliable Datagram Sockets (RDS) protocol must be disabled unless required."
   copy:
-      backup: no
       src: disable-rds.conf
       dest: /etc/modprobe.d/disable-rds.conf
       owner: root
@@ -664,7 +658,6 @@
 - name: "LOW | V-38522, V-38527 | PATCH | The audit system must be configured to audit all attempts to alter system time through settimeofday, clock_settime."
   lineinfile:
       state: present
-      backup: no
       dest: /etc/audit/audit.rules
       line: "-a always,exit -F arch={{ audit_arch }} -S settimeofday -S clock_settime -k audit_settime_rules"
   when: audit_settime_rules_audit.rc == 1
@@ -732,7 +725,6 @@
 - name: "LOW | V-38530 | PATCH | The audit system must be configured to audit all attempts to alter system time through /etc/localtime."
   lineinfile:
       state: present
-      backup: no
       dest: /etc/audit/audit.rules
       line: '-w /etc/localtime -p wa -k audit_localtime_rules'
   when: localtime_audit.rc == 1
@@ -890,7 +882,6 @@
 - name: "LOW | V-38541 | PATCH | The audit system must be configured to audit modifications to the systems Mandatory Access Control (MAC) configuration (SELinux)."
   lineinfile:
       state: present
-      backup: no
       dest: /etc/audit/audit.rules
       line: '-w /etc/selinux/ -p wa -k MAC-policy'
   when: mac_policy_audit.rc == 1
@@ -1147,7 +1138,6 @@
 - name: "LOW | V-38578 | PATCH | The audit system must be configured to audit changes to the /etc/sudoers file."
   lineinfile:
       state: present
-      backup: no
       dest: /etc/audit/audit.rules
       line: '-w /etc/sudoers -p wa -k actions'
   tags:
