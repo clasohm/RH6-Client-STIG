@@ -1,20 +1,62 @@
-# V-38584 remove xinetd
+- name: "LOW | V-38579 | PATCH | The system boot loader configuration file(s) must be owned by root."
+  file:
+    path: /boot/grub/grub.conf
+    owner: root
+  tags:
+    - cat3
+    - low
+    - V-38579
+    - grub
+    - patch
+
+- name: "LOW | V-38580 | PATCH | The audit system must be configured to audit the loading and unloading of dynamic kernel modules."
+  lineinfile:
+    line: "{{ item }}"
+    dest: /etc/audit/audit.rules
+  with_items:
+    - "-w /sbin/insmod -p x -k modules"
+    - "-w /sbin/rmmod -p x -k modules"
+    - "-w /sbin/modprobe -p x -k modules"
+    - "-a always,exit -F arch={{ arch}} -S init_module -S delete_module -k modules"
+
+- name: "LOW | V-38581 | PATCH | The system boot loader configuration file(s) must be group-owned by root."
+  file:
+    path: /boot/grub/grub.conf
+    group: root
+  tags:
+    - cat3
+    - low
+    - V-38581
+    - grub
+    - patch
+
+- name: "LOW | V-38582 | PATCH | The xinetd service must be disabled if no network services utilizing it are enabled"
+  service:
+    name: xinetd
+    state: stopped
+    enabled: no
+  tags:
+    - cat3
+    - low
+    - V-38582
+    - xinetd
+    - network
+    - patch
+
+- name: "LOW | V-38583 | PATCH | The system boot loader configuration file(s) must have mode 0600 or less permissive." 
+  file:
+    path: /boot/grub/grub.conf
+    mode: 'u-x,g-rwx, o-rwx'
+  tags:
+    - cat3
+    - low
+    - V-38583
+    - grub
+    - patch
+
 - name: "LOW | V-38584 | AUDIT | The xinetd service must be uninstalled if no network services utilizing it are enabled."
   command: rpm -q xinetd
   register: pkgs_xinetd_installed_audit
-  changed_when: false
-  failed_when: false
-  always_run: yes
-  tags:
-      - cat3
-      - low
-      - V-38584
-      - xinetd
-      - audit
-
-- name: "LOW | V-38584 | AUDIT | The xinetd service must be uninstalled if no network services utilizing it are enabled."
-  shell: "chkconfig --list | sed -n '/xinetd based services/,$p'"
-  register: pkgs_xinetd_services_audit
   changed_when: false
   failed_when: false
   always_run: yes
@@ -29,7 +71,6 @@
   yum:
       name: xinetd
       state: absent
-  when: "not ':on' in pkgs_xinetd_services_audit.stdout"
   tags:
       - cat3
       - low
