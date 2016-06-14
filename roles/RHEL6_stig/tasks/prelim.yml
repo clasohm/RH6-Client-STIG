@@ -106,6 +106,7 @@
   changed_when: false
   always_run: yes
   tags:
+      - cat3
       - umask
 
 - name: "PRELIM | Check for device files with unlabeled_t context"
