@@ -241,7 +241,7 @@
 - name: "LOW | V-38635 | PATCH | The audit system must be configured to audit all attempts to alter system time through adjtimex."
   lineinfile:
     line: -a always,exit -F arch=b{{ audit_arch }} -S adjtimex -k audit_time_rules 
-    path: /etc/audit/audit.rules
+    dest: /etc/audit/audit.rules
     state: present
   tags:
     - cat3
