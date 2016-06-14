@@ -488,9 +488,8 @@
       - patch
 
 # V-38522 auditd timeofday changes
-# V-38525 auditd stime change
 # V-38527 auditd settime
-- name: "LOW | V-38522, V-38525, V-38527 | AUDIT | The audit system must be configured to audit all attempts to alter system time through settimeofday, stime, clock_settime."
+- name: "LOW | V-38522, V-38527 | AUDIT | The audit system must be configured to audit all attempts to alter system time through settimeofday, clock_settime."
   command: grep audit_settime_rules /etc/audit/audit.rules
   register: audit_settime_rules_audit
   changed_when: false
@@ -500,22 +499,29 @@
       - cat3
       - low
       - V-38522
+      - V-38527
       - settimeofday
+      - clock_settime
       - audit
 
-- name: "LOW | V-38522, V-38525, V-38527 | PATCH | The audit system must be configured to audit all attempts to alter system time through settimeofday."
+- name: "LOW | V-38522, V-38527 | PATCH | The audit system must be configured to audit all attempts to alter system time through settimeofday, clock_settime."
   lineinfile:
       state: present
       backup: no
       dest: /etc/audit/audit.rules
-      line: '-a always,exit -F arch=b64 -S settimeofday -S stime -S clock_settime -k audit_settime_rules'
+      line: '-a always,exit -F arch=b64 -S settimeofday -S clock_settime -k audit_settime_rules'
   when: audit_settime_rules_audit.rc == 1
   tags:
       - cat3
       - low
       - V-38522
+      - V-38527
       - settimeofday
+      - clock_settime
       - patch
+
+# V-38525 auditd stime change
+# does not apply to 64 bit systems
 
 # V-38528 log martians
 - name: "LOW | V-38528 | AUDIT The system must log Martian packets."
