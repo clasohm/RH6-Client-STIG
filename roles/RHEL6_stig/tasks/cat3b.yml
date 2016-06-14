@@ -336,7 +336,18 @@
       - services
       - patch
 
-# V-38645 umask
+# V-38645 login.defs umask
+- name: "LOW | V-38645 | PATCH | The system default umask in /etc/login.defs must be 077."
+  replace:
+      dest: /etc/login.defs
+      regexp: '^UMASK.*'
+      replace: 'UMASK           077'
+  tags:
+      - cat3
+      - low
+      - V-38645
+      - umask
+      - patch
 
 # V-38646 oddjobd service
 - name: "LOW | V-38646 | AUDIT | The oddjobd service must not be running."
@@ -854,10 +865,6 @@
 - name: V-38642 Low  The system default umask for daemons must be 027 or 022
   lineinfile: state=present backup=yes dest=/etc/init.d/functions regexp="umask \d\d\d" line="umask 022"
   tags: [ 'cat3' , 'V-38642' , 'umask' ]
-
-- name: V-38645 Low  The system default umask in /etc/login.defs must be 077
-  lineinfile: "state=present backup=yes dest=/etc/login.defs regexp='^UMASK' line='UMASK           077'"
-  tags: [ 'cat3' , 'V-38645' , 'umask' ]
 
 - name: V-38608 Low  The SSH daemon must set a timeout interval on idle sessions
   lineinfile: "state=present backup=yes dest=/etc/ssh/sshd_config regexp='^(#)?ClientAliveInterval' line='ClientAliveInterval 900'"
