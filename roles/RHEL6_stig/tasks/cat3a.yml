@@ -1055,3 +1055,33 @@
       - auditd
       - delete
       - patch
+
+# V-38578 auditd actions
+- name: "LOW | V-38578 | AUDIT | The audit system must be configured to audit changes to the /etc/sudoers file."
+  command: grep -e '-k actions' /etc/audit/audit.rules
+  register: actions_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38578
+      - auditd
+      - actions
+      - audit
+
+- name: "LOW | V-38578 | PATCH | The audit system must be configured to audit changes to the /etc/sudoers file."
+  lineinfile:
+      state: present
+      backup: no
+      dest: /etc/audit/audit.rules
+      line: '-w /etc/sudoers -p wa -k actions'
+  when: actions_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38578
+      - auditd
+      - actions
+      - patch
