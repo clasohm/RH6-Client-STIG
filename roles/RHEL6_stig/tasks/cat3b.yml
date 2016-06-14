@@ -173,7 +173,7 @@
   command: service avahi-daemon status
   register: avahi_service_running_audit
   changed_when: false
-  fail_when: false
+  failed_when: false
   always_run: yes
   tags:
       - cat3
@@ -187,7 +187,7 @@
   command: chkconfig 'avahi-daemon' --list
   register: avahi_service_enabled_audit
   changed_when: false
-  fail_when: false
+  failed_when: false
   always_run: yes
   tags:
       - cat3
@@ -203,7 +203,7 @@
       state: stopped
       enabled: no
   when: "':on' in avahi_service_enabled_audit or avahi_service_running_audit.rc == 0"
-  fail_when: no
+  failed_when: no
   tags:
       - cat3
       - low
