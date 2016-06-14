@@ -754,36 +754,17 @@
 # V-38534 auditd account mod
 # V-38536 auditd account disable
 # V-38538 auditd account term
-- name: "LOW | V-38531, V-38534, V-38536, V-38538 | AUDIT | The operating system must automatically audit account creation, modification, disabling actions and termination."
-  command: grep -e '-k audit_account_changes' /etc/audit/audit.rules
-  register: account_changes_audit
-  changed_when: false
-  failed_when: false
-  always_run: yes
-  tags:
-      - cat3
-      - low
-      - V-38531
-      - V-38534
-      - V-38536
-      - V-38538
-      - auditd
-      - account_changes
-      - audit
-
 - name: "LOW | V-38531, V-38534, V-38536, V-38538 | PATCH | The operating system must automatically audit account creation, modification, disabling actions and termination."
-  blockinfile:
+  lineinfile:
+      line: "{{ item }}"
       state: present
-      backup: no
       dest: /etc/audit/audit.rules
-      marker: '# {mark} ACCOUNT CHANGE RULES'
-      block: |
-        -w /etc/group -p wa -k audit_account_changes
-        -w /etc/passwd -p wa -k audit_account_changes
-        -w /etc/gshadow -p wa -k audit_account_changes
-        -w /etc/shadow -p wa -k audit_account_changes
-        -w /etc/security/opasswd -p wa -k audit_account_changes
-  when: account_changes_audit.rc == 1
+  with_items:
+      - "-w /etc/group -p wa -k audit_account_changes"
+      - "-w /etc/passwd -p wa -k audit_account_changes"
+      - "-w /etc/gshadow -p wa -k audit_account_changes"
+      - "-w /etc/shadow -p wa -k audit_account_changes"
+      - "-w /etc/security/opasswd -p wa -k audit_account_changes"
   tags:
       - cat3
       - low
