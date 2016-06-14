@@ -547,6 +547,19 @@
       - patch
 
 # V-38675 limits core
+- name: "LOW | V-38675 | PATCH | Process core dumps must be disabled unless needed."
+  lineinfile:
+      state: present
+      dest: /etc/security/limits.conf
+      regexp: '^#?\\*.*core'
+      line: '*                hard    core            0'
+      insertbefore: '^# End of file'
+  tags:
+      - cat3
+      - low
+      - V-38675
+      - core_dump
+      - patch
 
 # V-38676 remove x11
 - name: "LOW | V-38676 | AUDIT | The xorg-x11-server-common (X Windows) package must not be installed, unless required."
@@ -822,10 +835,6 @@
   when: samba_check.stat.exists
   tags: [ 'cat3' , 'V-38656' , 'smb' ]
   notify: restart samba
-
-- name: V-38675 Low  Process core dumps must be disabled unless needed
-  lineinfile: "state=present backup=yes dest=/etc/security/limits.conf regexp='^#?\\*.*(hard|soft).*core' line='*               hard    core            0'"
-  tags: [ 'cat3' , 'V-38675' , 'core_dump' ]
 
 - name: V-38685 Low  Temporary accounts must be provisioned with an expiration date
   command: chage -E {{ item.expiration }}  {{ item.user }}
