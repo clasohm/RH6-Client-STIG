@@ -874,10 +874,6 @@
   tags: [ 'cat3' , 'V-38608' , 'ssh' ]
   notify: restart ssh
 
-- name: V-38651 Low  The system default umask for the bash shell must be 077
-  replace: backup=yes dest=/etc/bashrc regexp="umask \d\d\d" replace="umask 077"
-  tags: [ 'cat3' , 'V-38651' , 'umask' ]
-
 - name: V-38685 Low  Temporary accounts must be provisioned with an expiration date
   command: chage -E {{ item.expiration }}  {{ item.user }}
   when: rhel6stig_temporary_users is defined
