@@ -112,7 +112,6 @@
       - screen
       - patch
 
-# V-38608 sshd conf
 - name: "LOW | V-38608 | AUDIT | The SSH daemon must set a timeout interval on idle sessions."
   shell: grep ClientAliveInterval /etc/ssh/sshd_config | awk '{print $2}'
   register: sshd_client_alive_interval_audit
@@ -170,24 +169,9 @@
       - patch
   notify: restart ssh
 
-# V-38618 avahi-daemon
 - name: "LOW | V-38618 | AUDIT | The avahi service must be disabled."
   command: chkconfig 'avahi-daemon' --list
   register: avahi_service_enabled_audit
-  changed_when: false
-  failed_when: false
-  always_run: yes
-  tags:
-      - cat3
-      - low
-      - V-38618
-      - avahi
-      - services
-      - audit
-
-- name: "LOW | V-38618 | AUDIT | The avahi service must be disabled."
-  command: service avahi-daemon status
-  register: avahi_service_running_audit
   changed_when: false
   failed_when: false
   always_run: yes
@@ -205,6 +189,7 @@
       state: stopped
       enabled: no
   when: "':on' in avahi_service_enabled_audit or avahi_service_running_audit.rc == 0"
+  fail_when: no
   tags:
       - cat3
       - low
@@ -239,11 +224,29 @@
       - openldap_server
       - audit
 
-# V-38635 auditd adjtimex
+- name: "LOW | V-38635 | PATCH | The audit system must be configured to audit all attempts to alter system time through adjtimex."
+  lineinfile:
+    line: -a always,exit -F arch=b{{ audit_arch }} -S adjtimex -k audit_time_rules 
+    path: /etc/audit/audit.rules
+    state: present
+  tags:
+    - cat3
+    - low
+    - V-38627
+    - auditd
+    - system_time
+    - patch
 
-# V-38639 gconf screensaver
+- name: "LOW | V-38639 | PATCH | The system must display a publicly-viewable pattern during a graphical desktop environment session lock."
+  command: gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type string --set /apps/gnome-screensaver/mode blank-only
+  tags:
+    - cat3
+    - low
+    - V-38639
+    - screensaver
+    - gconftool
+    - patch
 
-# V-38640 abrtd service
 - name: "LOW | V-38640 | AUDIT | The Automatic Bug Reporting Tool (abrtd) service must not be running."
   command: chkconfig 'abrtd' --list
   register: abrtd_service_enabled_audit
