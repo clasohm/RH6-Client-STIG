@@ -343,7 +343,7 @@
 
 # V-38482 pam cracklib digits
 - name: "LOW | V-38482 | AUDIT | The system must require passwords to contain at least one numeric character."
-  command: grep /etc/pam.d/password-auth-ac
+  command: grep dcredit /etc/pam.d/password-auth-ac
   register: password_auth_dcredit_audit
   changed_when: false
   failed_when: false
@@ -356,7 +356,7 @@
       - audit
 
 - name: "LOW | V-38482 | AUDIT | The system must require passwords to contain at least one numeric character."
-  command: grep /etc/pam.d/system-auth-ac
+  command: grep dcredit /etc/pam.d/system-auth-ac
   register: system_auth_dcredit_audit
   always_run: yes
   ignore_errors: yes
