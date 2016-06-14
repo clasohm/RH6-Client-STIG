@@ -381,7 +381,18 @@
       - services
       - patch
 
-# V-38647 umask
+# V-38647 profile umask
+- name: "LOW | V-38647 | PATCH | The system default umask in /etc/profile must be 077."
+  replace:
+      dest: /etc/profile
+      regexp: 'umask \d\d\d'
+      replace: 'umask 077'
+  tags:
+      - cat3
+      - low
+      - V-38647
+      - umask
+      - patch
 
 # V-38648 qpidd
 - name: "LOW | V-38648 | AUDIT | The qpidd service must not be running."
@@ -843,27 +854,6 @@
 - name: V-38642 Low  The system default umask for daemons must be 027 or 022
   lineinfile: state=present backup=yes dest=/etc/init.d/functions regexp="umask \d\d\d" line="umask 022"
   tags: [ 'cat3' , 'V-38642' , 'umask' ]
-
-- name: V-38647 Low  The system default umask in /etc/profile must be 077
-  replace: backup=yes dest={{ item }} regexp="umask \d\d\d" replace="umask 077"
-  with_items:
-    - /etc/profile
-    - /etc/bashrc
-  tags: [ 'cat3' , 'V-38647' , 'umask' , 'bash' ]
-
-# Set default umask for fish shell if it is installed
-# This required two tasks in order to add multiple lines cleanly
-# Adding '\n' to the 'line' field causes this module to reinsert the same
-# line every time the task is run which is very undesirable.
-- name: Set default umask for fish shell to 077
-  lineinfile: backup=yes dest=/etc/fish/config.fish line="# Set default umask" insertafter=EOF
-  when: '"fish" in shells.stdout_lines'
-  tags: [ 'cat3' , 'V-38647' , 'umask' , 'bash' ]
-
-- name: Set default umask for fish shell to 077
-  lineinfile: backup=yes dest=/etc/fish/config.fish line="umask 077" insertafter="# Set default umask"
-  when: '"fish" in shells.stdout_lines'
-  tags: [ 'cat3' , 'V-38647' , 'umask' , 'bash' ]
 
 - name: V-38645 Low  The system default umask in /etc/login.defs must be 077
   lineinfile: "state=present backup=yes dest=/etc/login.defs regexp='^UMASK' line='UMASK           077'"
