@@ -758,7 +758,12 @@
 # V-38554 auditd fchownat
 # V-38556 auditd fremovexattr
 # V-38557 auditd fsetxattr
-- name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557 | AUDIT | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr, fsetxattr."
+# V-38558 auditd lchown
+# V-38559 auditd lremovexattr
+# V-38561 auditd lsetxattr
+# V-38563 auditd removexattr
+# V-38565 auditd setxattr
+- name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557, V-38558, V-38559, V-38561, V-38563, V-38565 | AUDIT | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr, fsetxattr, lchown, lremovexattr, lsetxattr, removexattr, setxattr."
   command: grep perm_mod /etc/audit/audit.rules
   register: perm_mod_audit
   changed_when: false
@@ -775,6 +780,11 @@
       - V-38554
       - V-38556
       - V-38557
+      - V-38558
+      - V-38559
+      - V-38561
+      - V-38563
+      - V-38565
       - chmod
       - chown
       - fchmod
@@ -783,16 +793,21 @@
       - fchownat
       - fremovexattr
       - fsetxattr
+      - lchown
+      - lremovexattr
+      - lsetxattr
+      - removexattr
+      - setxattr
       - audit
 
-- name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557 | PATCH | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr."
+- name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557, V-38558, V-38559, V-38561, V-38563, V-38565 | PATCH | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr, fsetxattr, lchown, lremovexattr, lsetxattr, setxattr."
   blockinfile:
       state: present
       backup: no
       dest: /etc/audit/audit.rules
       block: |
-        -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -F auid>=500 -F auid!=4294967295 -k perm_mod 
-        -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -F auid=0 -k perm_mod
+        -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -S lchown -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=500 -F auid!=4294967295 -k perm_mod 
+        -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -S lchown -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid=0 -k perm_mod
   when: perm_mod_audit.rc == 1
   tags:
       - cat3
@@ -805,6 +820,11 @@
       - V-38554
       - V-38556
       - V-38557
+      - V-38558
+      - V-38559
+      - V-38561
+      - V-38563
+      - V-38565
       - chmod
       - chown
       - fchmod
@@ -813,4 +833,9 @@
       - fchownat
       - fremovexattr
       - fsetxattr
+      - lchown
+      - lremovexattr
+      - lsetxattr
+      - removexattr
+      - setxattr
       - patch
