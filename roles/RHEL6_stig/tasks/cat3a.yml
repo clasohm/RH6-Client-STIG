@@ -751,17 +751,66 @@
       - patch
 
 # V-38543 auditd chmod
-
 # V-38545 auditd chown
-
 # V-38547 auditd fchmod
-
 # V-38550 auditd fchmodat
-
 # V-38552 auditd fchown
-
 # V-38554 auditd fchownat
+# V-38556 auditd fremovexattr
+# V-38557 auditd fsetxattr
+- name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557 | AUDIT | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr, fsetxattr."
+  command: grep perm_mod /etc/audit/audit.rules
+  register: perm_mod_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38543
+      - V-38545
+      - V-38547
+      - V-38550
+      - V-38552
+      - V-38554
+      - V-38556
+      - V-38557
+      - chmod
+      - chown
+      - fchmod
+      - fchmodat
+      - fchown
+      - fchownat
+      - fremovexattr
+      - fsetxattr
+      - audit
 
-# V-38556 auditd
-
-# V-38557 auditd
+- name: "LOW | V-38543, V-38545, V-38547, V-38550, V-38552, V-38554, V-38556, V-38557 | PATCH | The audit system must be configured to audit all discretionary access control permission modifications using chmod, chown, fchmod, fchmodat, fchown, fchownat, fremovexattr."
+  blockinfile:
+      state: present
+      backup: no
+      dest: /etc/audit/audit.rules
+      block: |
+        -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -F auid>=500 -F auid!=4294967295 -k perm_mod 
+        -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -F auid=0 -k perm_mod
+  when: perm_mod_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38543
+      - V-38545
+      - V-38547
+      - V-38550
+      - V-38552
+      - V-38554
+      - V-38556
+      - V-38557
+      - chmod
+      - chown
+      - fchmod
+      - fchmodat
+      - fchown
+      - fchownat
+      - fremovexattr
+      - fsetxattr
+      - patch
