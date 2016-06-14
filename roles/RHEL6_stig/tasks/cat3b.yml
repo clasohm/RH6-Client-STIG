@@ -426,7 +426,18 @@
       - services
       - patch
 
-# V-38649 umask
+# V-38649 csh umask
+- name: "LOW | V-38649 | PATCH | The system default umask for the csh shell must be 077."
+  replace:
+      dest: /etc/csh.cshrc
+      regexp: 'umask \d\d\d'
+      replace: 'umask 077'
+  tags:
+      - cat3
+      - low
+      - V-38649
+      - umask
+      - patch
 
 # V-38650 rdisc service
 - name: "LOW | V-38650 | AUDIT | The rdisc service must not be running."
@@ -475,8 +486,8 @@
 - name: "LOW | V-38651 | PATCH | The system default umask for the bash shell must be 077."
   replace:
       dest: /etc/bashrc
-      regexp: '^(\s*)umask.*'
-      replace: '\1umask 077'
+      regexp: 'umask \d\d\d'
+      replace: 'umask 077'
   tags:
       - cat3
       - low
@@ -828,10 +839,6 @@
       - patch
 
 # --- BREAK --- #
-
-- name: V-38649 Low  The system default umask for the csh shell must be 077
-  replace: backup=yes dest=/etc/csh.cshrc regexp="umask \d\d\d" replace="umask 077"
-  tags: [ 'cat3' , 'V-38649' , 'csh' , 'umask' ]
 
 - name: V-38642 Low  The system default umask for daemons must be 027 or 022
   lineinfile: state=present backup=yes dest=/etc/init.d/functions regexp="umask \d\d\d" line="umask 022"
