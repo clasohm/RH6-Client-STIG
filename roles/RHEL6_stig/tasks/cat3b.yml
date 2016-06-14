@@ -624,6 +624,18 @@
 # V-38690 emergency accounts
 
 # V-38692 inactive acct set
+- name: "LOW | V-V-38692 | PATCH | Accounts must be locked upon 35 days of inactivity."
+  lineinfile:
+      state: present
+      dest: /etc/default/useradd
+      regexp: '^#?INACTIVE='
+      line: 'INACTIVE={{ rhel6stig_acct_max_inactive }}'
+  tags:
+      - cat3
+      - low
+      - V-38692
+      - account
+      - patch
 
 # V-38693 pam
 
@@ -633,7 +645,7 @@
       state: present
       dest: /etc/default/useradd
       regexp: '^#?INACTIVE='
-      line: 'INACTIVE=35'
+      line: 'INACTIVE={{ rhel6stig_acct_max_inactive }}'
   tags:
       - cat3
       - low
