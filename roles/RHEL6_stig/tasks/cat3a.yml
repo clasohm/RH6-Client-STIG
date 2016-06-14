@@ -345,6 +345,7 @@
 # V-38569 pam cracklib uppercase character
 # V-38570 pam cracklib special character
 # V-38571 pam cracklib lowercase character
+# V-38572 pam cracklib changed characters
 - name: "LOW | V-38482 | AUDIT | The system must require passwords to contain at least one numeric character."
   command: grep dcredit /etc/pam.d/password-auth-ac
   register: password_auth_dcredit_audit
@@ -358,6 +359,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
@@ -374,6 +376,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
@@ -390,6 +393,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
@@ -406,6 +410,24 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
+      - password
+      - audit
+
+- name: "LOW | V-38572 | AUDIT | The system must require at least eight characters be changed between the old and new passwords during a password change."
+  command: grep difok /etc/pam.d/password-auth-ac
+  register: password_auth_difok_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38482
+      - V-38569
+      - V-38570
+      - V-38571
+      - V-38572
       - password
       - audit
 
@@ -422,6 +444,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
@@ -438,6 +461,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
@@ -454,6 +478,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
@@ -470,18 +495,36 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - password
       - audit
 
-- name: "LOW | V-38482, V-38569, V-38570, V-38571 | PATCH | The system must require passwords to contain at least one numeric, one uppercase, one special and one lowercase character."
+- name: "LOW | V-38572 | AUDIT | The system must require at least eight characters be changed between the old and new passwords during a password change."
+  command: grep difok /etc/pam.d/system-auth-ac
+  register: system_auth_difok_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38482
+      - V-38569
+      - V-38570
+      - V-38571
+      - V-38572
+      - password
+      - audit
+
+- name: "LOW | V-38482, V-38569, V-38570, V-38571, V-38572 | PATCH | The system must require passwords to contain at least one numeric, one uppercase, one special and one lowercase character."
   pam:
       service: password-auth-ac
       type: password
       control: requisite
       pam_module: pam_cracklib.so
-      arguments: try_first_pass retry=3 type= dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1
+      arguments: try_first_pass retry=3 type= dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 difok=8
       state: present
-  when: password_auth_dcredit_audit.rc == 1 or password_auth_ucredit_audit.rc == 1 or password_auth_ocredit_audit.rc == 1 or password_auth_lcredit_audit.rc == 1
+  when: password_auth_dcredit_audit.rc == 1 or password_auth_ucredit_audit.rc == 1 or password_auth_ocredit_audit.rc == 1 or password_auth_lcredit_audit.rc == 1 or password_auth_difok_audit.rc == 1
   tags:
       - cat3
       - low
@@ -489,18 +532,19 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - passwords
       - patch
 
-- name: "LOW | V-38482, V-38569, V-38570 | PATCH | The system must require passwords to contain at least one numeric, one uppercase, one special and one lowercase character."
+- name: "LOW | V-38482, V-38569, V-38570, V-38571, V-38572 | PATCH | The system must require passwords to contain at least one numeric, one uppercase, one special and one lowercase character."
   pam:
       service: system-auth-ac
       type: password
       control: requisite
       pam_module: pam_cracklib.so
-      arguments: try_first_pass retry=3 type= dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1
+      arguments: try_first_pass retry=3 type= dcredit=-1 ucredit=-1 ocredit=-1 lcredit=-1 difok=8
       state: present
-  when: system_auth_dcredit_audit.rc == 1 or system_auth_ucredit_audit.rc == 1 or password_auth_ocredit_audit.rc == 1 or password_auth_lcredit_audit.rc == 1
+  when: system_auth_dcredit_audit.rc == 1 or system_auth_ucredit_audit.rc == 1 or password_auth_ocredit_audit.rc == 1 or password_auth_lcredit_audit.rc == 1 or password_auth_difok_audit.rc == 1
   tags:
       - cat3
       - low
@@ -508,6 +552,7 @@
       - V-38569
       - V-38570
       - V-38571
+      - V-38572
       - passwords
       - patch
 
