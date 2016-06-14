@@ -1,41 +1,24 @@
-- name: "LOW | V-38565 | PATCH | The audit system must be configured to audit all discretionary access control permission modifications using setxattr."
-  lineinfile:
-    line: "{{ item }}"
-    state: present
-    dest: /etc/audit/audit.rules
-  with_items:
-    - "-a always,exit -F arch=b32 -S setxattr -F auid>=500 -F auid!=4294967295 \\"
-    - "-k perm_mod"
-    - "-a always,exit -F arch=b32 -S setxattr -F auid=0 -k perm_mod"
-  tags:
-    - cat3
-    - low
-    - V-38565
-    - patch
-    - auditd
-
-# For 64 bit architectures 
-- name: "LOW | V-38565 | PATCH | The audit system must be configured to audit all discretionary access control permission modifications using setxattr."
-  lineinfile:
-    line: "{{ item }}"
-    state: present
-    dest: /etc/audit/audit.rules
-  with_items:
-    - "-a always,exit -F arch=b64 -S setxattr -F auid>=500 -F auid!=4294967295 \\"
-    - "-k perm_mod"
-    - "-a always,exit -F arch=b64 -S setxattr -F auid=0 -k perm_mod"
-  when: ansible_architecture == "x86_64"
-  tags:
-    - cat3
-    - low
-    - V-38565
-    - patch
-    - auditd
-
 - name: set arch fact
   set_fact:
     arch: "{{ ansible_architecture | regex_replace('.*(\d\d$)','\1')}}"
-  
+
+# V-38565 auditd setxattr
+- name: "LOW | V-38565 | PATCH | The audit system must be configured to audit all discretionary access control permission modifications using setxattr."
+  lineinfile:
+    line: "{{ item }}"
+    state: present
+    dest: /etc/audit/audit.rules
+  with_items:
+    - "-a always,exit -F arch='{{ arch }}' -S setxattr -F auid>=500 -F auid!=4294967295 -k perm_mod"
+    - "-a always,exit -F arch='{{ arch }}' -S setxattr -F auid=0 -k perm_mod"
+  tags:
+    - cat3
+    - low
+    - V-38565
+    - auditd
+    - patch
+
+# V-38568 auditd mount
 - name: "LOW | V-38568 | PATCH | The audit system must be configured to audit successful file system mounts."
   lineinfile:
     line: "{{ item }}"
@@ -47,11 +30,8 @@
     - cat3
     - low
     - V-38568
-    - patch
     - auditd
-
-
-# V-38567 auditd
+    - patch
 
 # V-38568 auditd
 
