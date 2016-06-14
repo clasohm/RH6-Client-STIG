@@ -329,7 +329,18 @@
       - services
       - patch
 
-# V-38642 umask
+# V-38642 funactions umask
+- name: "LOW | V-38642 | PATCH | The system default umask for daemons must be 027 or 022."
+  replace:
+      dest: /etc/init.d/functions
+      regexp: 'umask \d\d\d'
+      replace: 'umask 022'
+  tags:
+      - cat3
+      - low
+      - V-38642
+      - umask
+      - patch
 
 # V-38644 ntpdate service
 - name: "LOW | V-38644 | AUDIT | The ntpdate service must not be running."
@@ -899,10 +910,6 @@
       - patch
 
 # --- BREAK --- #
-
-- name: V-38642 Low  The system default umask for daemons must be 027 or 022
-  lineinfile: state=present backup=yes dest=/etc/init.d/functions regexp="umask \d\d\d" line="umask 022"
-  tags: [ 'cat3' , 'V-38642' , 'umask' ]
 
 - name: V-38608 Low  The SSH daemon must set a timeout interval on idle sessions
   lineinfile: "state=present backup=yes dest=/etc/ssh/sshd_config regexp='^(#)?ClientAliveInterval' line='ClientAliveInterval 900'"
