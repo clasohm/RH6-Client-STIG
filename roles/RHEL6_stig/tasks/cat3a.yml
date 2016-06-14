@@ -614,6 +614,7 @@
       state: present
       backup: no
       dest: /etc/audit/audit.rules
+      marker: '# {mark} ACCOUNT CHANGE RULES'
       block: |
         -w /etc/group -p wa -k audit_account_changes
         -w /etc/passwd -p wa -k audit_account_changes
@@ -808,6 +809,7 @@
       state: present
       backup: no
       dest: /etc/audit/audit.rules
+      marker: '# {mark} PERM MOD RULES'
       block: |
         -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -S lchown -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid>=500 -F auid!=4294967295 -k perm_mod 
         -a always,exit -F arch=b64 -S chmod -S chown -S fchmod -S fchmodat -S fchown -S fchownat -S fremovexattr -S fsetxattr -S lchown -S lremovexattr -S lsetxattr -S removexattr -S setxattr -F auid=0 -k perm_mod
@@ -830,4 +832,37 @@
       - V-38565
       - auditd
       - perm_mod
+      - patch
+
+# V-38568 auditd mount
+- name: "LOW | V-38568 | AUDIT | The audit system must be configured to audit successful file system mounts."
+  command: grep mount /etc/audit/audit.rules
+  register: mount_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38568
+      - auditd
+      - mount
+      - audit
+
+- name: "LOW | V-38568 | PATCH | The audit system must be configured to audit successful file system mounts."
+  blockinfile:
+      state: present
+      backup: no
+      dest: /etc/audit/audit.rules
+      marker: '# {mark} MOUNT RULES'
+      block: |
+        -a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k mount 
+        -a always,exit -F arch=b64 -S mount -F auid=0 -k mount
+  when: mount_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38568
+      - auditd
+      - mount
       - patch
