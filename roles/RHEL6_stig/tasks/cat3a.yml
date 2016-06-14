@@ -33,9 +33,9 @@
 - name: "LOW | V-38438 | AUDIT | Auditing must be enabled at boot by setting a kernel parameter."
   command: grep audit=1 /etc/grub.conf
   register: grub_audit_audit
+  changed_when: false
+  failed_when: false
   always_run: yes
-  ignore_errors: yes
-  changed_when: no
   tags:
       - cat3
       - low
@@ -345,9 +345,9 @@
 - name: "LOW | V-38482 | AUDIT | The system must require passwords to contain at least one numeric character."
   command: grep /etc/pam.d/password-auth-ac
   register: password_auth_dcredit_audit
+  changed_when: false
+  failed_when: false
   always_run: yes
-  ignore_errors: yes
-  changed_when: no
   tags:
       - cat3
       - low
@@ -493,9 +493,9 @@
 - name: "LOW | V-38522, V-38525, V-38527 | AUDIT | The audit system must be configured to audit all attempts to alter system time through settimeofday, stime, clock_settime."
   command: grep audit_settime_rules /etc/audit/audit.rules
   register: audit_settime_rules_audit
+  changed_when: false
+  failed_when: false
   always_run: yes
-  ignore_errors: yes
-  changed_when: no
   tags:
       - cat3
       - low
@@ -554,9 +554,9 @@
 - name: "LOW | V-38530 | AUDIT | The audit system must be configured to audit all attempts to alter system time through /etc/localtime."
   command: grep /etc/localtime /etc/audit/audit.rules
   register: localtime_audit
+  changed_when: false
+  failed_when: false
   always_run: yes
-  ignore_errors: yes
-  changed_when: no
   tags:
       - cat3
       - low
@@ -585,9 +585,9 @@
 - name: "LOW | V-38531, V-38534, V-38536, V-38538 | AUDIT | The operating system must automatically audit account creation, modification, disabling actions and termination."
   command: grep audit_account_changes /etc/audit/audit.rules
   register: account_changes_audit
+  changed_when: false
+  failed_when: false
   always_run: yes
-  ignore_errors: yes
-  changed_when: no
   tags:
       - cat3
       - low
