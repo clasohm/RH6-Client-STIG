@@ -628,6 +628,18 @@
 # V-38693 pam
 
 # V-38694 inactive acct set
+- name: "LOW | V-V-38694 | PATCH | The operating system must manage information system identifiers for users and devices by disabling the user identifier after an organization defined time period of inactivity."
+  lineinfile:
+      state: present
+      dest: /etc/default/useradd
+      regexp: '^#?INACTIVE='
+      line: 'INACTIVE=35'
+  tags:
+      - cat3
+      - low
+      - V-38694
+      - account
+      - patch
 
 # V-38697 see not_automated.yml
 
