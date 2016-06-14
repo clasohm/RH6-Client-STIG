@@ -871,12 +871,6 @@
   tags: [ 'cat3' , 'V-38608' , 'ssh' ]
   notify: restart ssh
 
-- name: V-38685 Low  Temporary accounts must be provisioned with an expiration date
-  command: chage -E {{ item.expiration }}  {{ item.user }}
-  when: rhel6stig_temporary_users is defined
-  with_items: rhel6stig_temporary_users
-  tags: [ 'cat3' , 'V-38685' , 'accounts' ]
-
 - name: Use strong MAC algorithms
   lineinfile: "state=present backup=yes dest=/etc/ssh/sshd_config regexp='^#?MACS' line='MACS    hmac-sha1,umac-64@openssh.com,hmac-ripemd160,hmac-sha2-256,hmac-sha2-512'"
   tags: [ 'cat3' , 'ssh' , 'config' ]
