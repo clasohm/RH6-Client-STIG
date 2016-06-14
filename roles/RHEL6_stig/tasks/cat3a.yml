@@ -723,6 +723,32 @@
 # no longer exists in STIG v11
 
 # V-38541 auditd selinux change
+- name: "LOW | V-38541 | AUDIT | The audit system must be configured to audit modifications to the systems Mandatory Access Control (MAC) configuration (SELinux)."
+  command: grep MAC-policy /etc/audit/audit.rules
+  register: mac_policy_audit
+  changed_when: false
+  failed_when: false
+  always_run: yes
+  tags:
+      - cat3
+      - low
+      - V-38541
+      - selinux
+      - audit
+
+- name: "LOW | V-38541 | PATCH | The audit system must be configured to audit modifications to the systems Mandatory Access Control (MAC) configuration (SELinux)."
+  lineinfile:
+      state: present
+      backup: no
+      dest: /etc/audit/audit.rules
+      line: '-w /etc/selinux/ -p wa -k MAC-policy'
+  when: mac_policy_audit.rc == 1
+  tags:
+      - cat3
+      - low
+      - V-38541
+      - selinux
+      - patch
 
 # V-38543 auditd chmod
 
