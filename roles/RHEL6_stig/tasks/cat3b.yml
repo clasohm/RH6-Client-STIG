@@ -458,7 +458,22 @@
 
 # V-38651 umask
 
-# V-38656 smb signing
+# V-38656 smb client signing
+- name: "LOW | V-38656 | PATCH | The system must use SMB client signing for connecting to samba servers using smbclient."
+  lineinfile:
+      state: present
+      dest: /etc/samba/smb.conf
+      regexp: '^#?client signing'
+      line: 'client signing = mandatory'
+      insertafter: '^\[global\]'
+  when: samba_check.stat.exists
+  notify: restart samba
+  tags:
+      - cat3
+      - low
+      - V-38656
+      - smb
+      - patch
 
 # V-38669 postfix service
 - name: "LOW | V-38669 | AUDIT | The postfix service must be enabled for mail delivery."
@@ -829,12 +844,6 @@
 - name: V-38651 Low  The system default umask for the bash shell must be 077
   replace: backup=yes dest=/etc/bashrc regexp="umask \d\d\d" replace="umask 077"
   tags: [ 'cat3' , 'V-38651' , 'umask' ]
-
-- name: V-38656 Low  The system must use SMB client signing for connecting to samba servers using smbclient
-  lineinfile: "state=present backup=yes dest=/etc/samba/smb.conf regexp='client signing' line='client signing = mandatory' insertafter='\\[global\\]'"
-  when: samba_check.stat.exists
-  tags: [ 'cat3' , 'V-38656' , 'smb' ]
-  notify: restart samba
 
 - name: V-38685 Low  Temporary accounts must be provisioned with an expiration date
   command: chage -E {{ item.expiration }}  {{ item.user }}
