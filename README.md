@@ -33,7 +33,7 @@ This simple utility allows you to see the rules that exist in the given XML file
       param1: foo
 
 # Example
-- name: "HIGH | V-38653 | The snmpd service must not use a default password.
+- name: "HIGH | V-38653 | The snmpd service must not use a default password."
   some_module:
       param1: foo
   
