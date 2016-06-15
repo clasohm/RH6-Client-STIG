@@ -158,7 +158,7 @@
   register: telnet_service_audit
   changed_when: false
   always_run: yes
-  failed_when: yes
+  failed_when: no 
   tags:
       - cat1
       - high
@@ -186,7 +186,7 @@
   always_run: yes
   register: rsh_server_audit
   changed_when: no
-  failed_when: yes
+  failed_when: no
 
 - name: "HIGH | V-38591 | PATCH | The rsh-server package must not be installed"
   yum:

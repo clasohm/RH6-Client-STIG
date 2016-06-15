@@ -1,19 +1,20 @@
 ---
 # This audit.rules file is from https://github.com/RedHatGov/stig-fix-el6/tree/master/config
 
-# Not automated V-38439 The system must provide automated support for account management functions.
+# Not automated V-38439 
+# MEDIUM | V-38439 | The system must provide automated support for account management functions.
 - name: "MEDIUM | V-38443, V-38448, V-38449 | AUDIT | The /etc/gshadow file must be owned by root. The /etc/gshadow file must be group-owned by root. The /etc/gshadow file must have mode 0000"
   stat:
       path: /etc/gshadow
   register: gshadow_stat
   tags:
-    - cat2
-    - medium
-    - V-38443
-    - V-38448
-    - V-38449
-    - audit
-    - file_perms
+      - cat2
+      - medium
+      - V-38443
+      - V-38448
+      - V-38449
+      - audit
+      - file_perms
 
 - name: "MEDIUM | V-38443 | PATCH | The /etc/gshadow file must be owned by root."
   file:
@@ -21,11 +22,11 @@
       owner: root
   register: gshadow_stat
   tags:
-    - cat2
-    - medium
-    - V-38443
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38443
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38448 | PATCH | The /etc/gshadow file must be group-owned by root."
   file:
@@ -33,11 +34,11 @@
       group: root
   register: gshadow_stat
   tags:
-    - cat2
-    - medium
-    - V-38448
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38448
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38449 | PATCH | The /etc/gshadow file must have mode 0000"
   file:
@@ -45,92 +46,92 @@
       mode: "0000"
   register: gshadow_stat
   tags:
-    - cat2
-    - medium
-    - V-38449
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38449
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38450, V-38451, V-38457 | AUDIT | The /etc/passwd file must be owned by root. The /etc/passwd file must be group-owned by root.The /etc/passwd file must have mode 0644 or less permissive"
   stat:
       path: /etc/passwd
   register: /etc/passwd_stat
   tags:
-    - cat2
-    - medium
-    - V-38450
-    - V-38451
-    - V-38457
-    - audit
-    - file_perms
+      - cat2
+      - medium
+      - V-38450
+      - V-38451
+      - V-38457
+      - audit
+      - file_perms
 
 - name: "MEDIUM | V-38450 | PATCH | The /etc/passwd file be owned by root"
   file:
       path: /etc/passwd
       owner: root
   tags:
-    - cat2
-    - medium
-    - V-38450
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38450
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38451 | PATCH | The /etc/passwd file be group-owned by root"
   file:
       path: /etc/passwd
       group: root
   tags:
-    - cat2
-    - medium
-    - V-38451
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38451
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38457 | PATCH | The /etc/passwd file must have mode 0644 or less permissive"
   file:
       path: /etc/passwd
       mode: "u-x,g-wx,o-wx"
   tags:
-    - cat2
-    - medium
-    - V-38457
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38457
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38458, V-38459, V-38461 | AUDIT | The /etc/group file must be owned by root. The /etc/group file must be group-owned by root.The /etc/group file must have mode 0644 or less permissive"
   stat:
       path: /etc/group
   register: /etc/group_stat
   tags:
-    - cat2
-    - medium
-    - V-38458
-    - V-38459
-    - V-38461
-    - audit
-    - file_perms
+      - cat2
+      - medium
+      - V-38458
+      - V-38459
+      - V-38461
+      - audit
+      - file_perms
 
 - name: "MEDIUM | V-38458 | PATCH | The /etc/group file be owned by root"
   file:
       path: /etc/group
       owner: root
   tags:
-    - cat2
-    - medium
-    - V-38458
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38458
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38459 | PATCH | The /etc/group file be group-owned by root"
   file:
       path: /etc/group
       group: root
   tags:
-    - cat2
-    - medium
-    - V-38459
-    - patch
-    - file_perms
+      - cat2
+      - medium
+      - V-38459
+      - patch
+      - file_perms
 
 - name: "MEDIUM | V-38461 | PATCH | The /etc/group file must have mode 0644 or less permissive"
   file:
@@ -182,8 +183,8 @@
 
 - name: "MEDIUM | V-38475 | PATCH | The system must require passwords to contain a minimum of 14 characters."
   lineinfile:
-      regexp: '(^PASS_MIN_LEN)\s*(\d*)'
-      line: '\1 {{ rhel6stig_pass_min_length }}'
+      regexp: '(^PASS_MIN_LEN)\\s*(\\d*)'
+      line: '\\1 {{ rhel6stig_pass_min_length }}'
       dest: /etc/login.defs
       backrefs: yes
   tags:
@@ -207,8 +208,8 @@
 
 - name: "MEDIUM | V-38477 | PATCH | The system must require passwords to contain a minimum of 14 characters."
   lineinfile:
-      regexp: '(^PASS_MIN_DAYS)\s*(\d*)'
-      line: '\1 {{ rhel6stig_pass_min_days }}'
+      regexp: '(^PASS_MIN_DAYS)\\s*(\\d*)'
+      line: '\\1 {{ rhel6stig_pass_min_days }}'
       dest: /etc/login.defs
       backrefs: yes
   tags:
@@ -233,7 +234,7 @@
 - name: "MEDIUM | V-38479 | PATCH | User passwords must be changed at least every 60 days."
   lineinfile:
       regexp: '(^PASS_MAX_DAYS)\s*(\d*)'
-      line: '\1 {{ rhel6stig_pass_max_days }}'
+      line: '\\1 {{ rhel6stig_pass_max_days }}'
       dest: /etc/login.defs
       backrefs: yes
   tags:
@@ -368,7 +369,7 @@
   shell: grep "^log_file" /etc/audit/auditd.conf|sed 's/^[^/]*//; s/[^/]*$//' | xargs -I % find % -type f ! -user root
   changed_when: no
   always_run: yes
-  ignore_errors: yes
+  failed_when: no
   register: audit_log_dir_owner_audit
   tags:
       - cat2
@@ -427,6 +428,7 @@
       - file_perms
 
 # V-38499 is checked but not automatically patched, please see not_automated.yml
+# MEDIUM | V-38499 | The /etc/passwd file must not contain password hashes.
 
 - name: "MEDIUM | V-38501 | AUDIT | The system must disable accounts after excessive login failures within a 15-minute interval."
   shell: "grep -h pam_faillock /etc/pam.d/system-auth /etc/pam.d/password-auth | grep fail_interval | awk -F'=' '{print $NF}'"
@@ -446,7 +448,7 @@
   shell: grep -h '^account\s*required\s*pam_faillock\.so' /etc/pam.d/system-auth /etc/pam.d/password-auth
   changed_when: no
   always_run: yes
-  ignore_errors: yes
+  failed_when: no
   register: login_failures_account_require
   tags:
       - cat2
@@ -462,7 +464,7 @@
           - "{{ item | int }} >= 900"
           - "{{ login_failures_account_require.stdout_lines | length }} == 2"
   with_items: "{{ login_failures_interval_audit.stdout_lines }}"
-  ignore_errors: yes
+  failed_when: no
   register: login_failures_interval_audit
   tags:
       - medium
@@ -813,7 +815,10 @@
       - patch
 
 # V-38520 not automatically remediated. See not_automated.yml
+# MEDIUM | V-38520 | The operating system must back up audit records on an organization defined frequency onto a different system or media than the system being audited.
+
 # V-38521 not automatically remediated. See not_automated.yml
+# MEDIUM | V-38521 | The operating system must support the requirement to centrally manage the content of audit records generated by organization defined information system components.
 
 - name: "MEDIUM | V-38523 | AUDIT | The system must not accept IPv4 source-routed packets on any interface."
   shell: "sysctl net.ipv4.conf.all.accept_source_route | awk '{print $3}'"
@@ -1099,7 +1104,7 @@
       state: present
       create: yes
       regexp: '^options ipv6 disable='
-      line: options ipv6 disable={{ (not rhel6stig_ipv6_required) | bool | int }}
+      line: options ipv6 disable={{ (not rhel6stig_ipv6_required) | bool }}
       dest: /etc/modprobe.d/disable-ipv6.conf
   when:
       - ipv6_protocol_handler_bound_network_stack_audit is defined
@@ -1152,7 +1157,7 @@
 #         MEDIUM | V-38553 | AUDIT | The operating system must prevent public IPv6 access into an organizations internal networks, except as appropriately mediated by managed interfaces employing boundary protection devices.
 #  command: service ip6tables status
 #  when: rhel6stig_ipv6_required
-#  ignore_errors: yes
+#  failed_when: no
 #  changed_when: no
 #  always_run: yes
 #  register: ip6tables_audit
@@ -1188,7 +1193,7 @@
 #         MEDIUM | V-38555 | AUDIT | The system must employ a local IPv4 firewall.
 #         MEDIUM | V-38560 | AUDIT | The operating system must connect to external networks or information systems only through managed IPv4 interfaces consisting of boundary protection devices arranged in accordance with an organizational security architecture.
 #  command: service iptables status
-#  ignore_errors: yes
+#  failed_when: no
 #  changed_when: no
 #  always_run: yes
 #  register: iptables_audit
@@ -1299,7 +1304,7 @@
   shell: find /etc/pam.d/ -type f -not -name '*.*'
   changed_when: no
   register: pamd_files
-  ignore_errors: yes
+  failed_when: no
   tags:
       - cat2
       - medium
@@ -1433,7 +1438,7 @@
   shell: egrep -e "(-w |-F path=)/sbin/insmod" /etc/audit/audit.rules; egrep -e "(-w |-F path=)/sbin/modprobe" /etc/audit/audit.rules; egrep -e "(-w |-F path=)/sbin/rmmod" /etc/audit/audit.rules;grep -w "init_module" /etc/audit/audit.rules; grep -w "init_module" /etc/audit/audit.rules
   always_run: yes
   changed_when: False
-  ignore_errors: yes
+  failed_when: no
   register: dynamic_kernel_loading_audit
   tags:
     - cat2
@@ -1646,6 +1651,7 @@
   shell: grep -h pam_faillock /etc/pam.d/system-auth /etc/pam.d/password-auth | grep unlock_time
   changed_when: no
   always_run: yes
+  failed_when: no
   register: admin_unlock_audit
   tags:
       - cat2
@@ -1772,7 +1778,7 @@
 - name: "MEDIUM | V-38604 | AUDIT | The ypbind service must not be running."
   command: chkconfig ypbind --list
   changed_when: no
-  ignore_errors: yes
+  failed_when: no
   always_run: yes
   register: ypbind_service_audit
   when: "'ypbind' in sysv_services.stdout"
@@ -1802,7 +1808,7 @@
   command: service crond status
   changed_when: no
   always_run: yes
-  ignore_errors: yes
+  failed_when: no
   register: crond_status_audit
   when: "'crond' in sysv_services.stdout"
   tags:
@@ -1944,11 +1950,11 @@
 
 - name: "MEDIUM | V-38615 | PATCH | The SSH daemon must be configured with the Department of Defense (DoD) login banner."
   lineinfile:
-    state: present
-    dest: /etc/ssh/sshd_config
-    regexp: '^#?Banner'
-    line: Banner /etc/issue
-    validate: sshd -t -f %s
+      state: present
+      dest: /etc/ssh/sshd_config
+      regexp: '^#?Banner'
+      line: Banner /etc/issue
+      validate: sshd -t -f %s
   notify: restart ssh
   tags:
       - cat2
@@ -2286,13 +2292,13 @@
 
 - name: "MEDIUM | V-51875 | PATCH  | The operating system, upon successful logon/access, must display to the user the number of unsuccessful logon/access attempts since the last successful logon/access."
   pam: 
-    service: system-auth
-    type: session
-    control: required
-    pam_module: pam_lastlog.so 
-    arguments: show failed 
-    after_line: session required pam_limits.so
-    state: present
+      service: system-auth
+      type: session
+      control: required
+      pam_module: pam_lastlog.so 
+      arguments: show failed 
+      after_line: session required pam_limits.so
+      state: present
   tags: 
    - cat2
    - medium
@@ -2302,7 +2308,7 @@
 
 - name: 'MEDIUM | V-51391 | AUDIT | A file integrity baseline must be created.'
   stat: 
-    path: /var/lib/aide/aide.db.gz
+      path: /var/lib/aide/aide.db.gz
   register: aide_db
   tags: 
    - cat2
