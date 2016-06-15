@@ -41,8 +41,12 @@ for dirpath, dirnames, filenames in os.walk(ansible_content):
                 task_file = os.path.join(dirpath, filename)
                 with open(task_file, 'r') as tf:
                     for line in tf:
-                        if all(string in line for string in ['V-','name']):
-                            ids_in_tasks.add(line.split('|')[1].strip())
+                        if all(string in line for string in ['V-','name']) or \
+                           all(string in line for string in ['V-','#']): 
+                            try:
+                                ids_in_tasks.add(line.split('|')[1].strip())
+                            except IndexError:
+                                continue
 
 for rule in [xml_rule for xml_rule in ids_in_xml if xml_rule not in ids_in_tasks]:
     print rule
