@@ -1,4 +1,5 @@
 - name: Apply STIG
+  hosts: all
   become: yes
   roles:
     - role: RHEL6_stig
