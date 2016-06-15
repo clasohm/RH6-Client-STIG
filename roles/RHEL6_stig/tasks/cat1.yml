@@ -221,6 +221,7 @@
     state: stopped
     enabled: no
   when: rsh_service_audit.rc == 0
+  failed_when: no
   tags:
       - cat1
       - high
@@ -247,6 +248,7 @@
       name: rexec
       state: stopped
   when: rexec_status_audit.rc == 0
+  failed_when: no
   tags:
       - cat1
       - high
@@ -271,6 +273,8 @@
   service:
     name: rlogin
     enabled: no
+    state: stopped
+  failed_when: no
   when: rlogin_status_audit.rc == 0
   tags:
       - cat1
@@ -362,6 +366,7 @@
       - snmp
 
 # V-38666 checks can be found in not_automated.yml
+# HIGH | V-38666 | The system must use and update a DoD-approved virus scan program.
 
 - name: "HIGH | V-38668 | AUDIT | The x86 Ctrl-Alt-Delete key sequence must be disabled"
   command: grep "exec /sbin/shutdown" /etc/init/control-alt-delete.override
@@ -391,10 +396,12 @@
       - ctrl_alt_delete
 
 # V-38677 can be found in not_automated.yml
+# HIGH | V-38677 | The NFS server must not have the insecure file locking option enabled.
 
 - name: "HIGH | V-38701 | AUDIT | The TFTP daemon must operate in secure mode which provides access only to a single directory on the host file system"
   command: grep "server_args = -s" /etc/xinetd.d/tftp
   register: tftp_audit
+  changed_when: no
   always_run: yes
   when: "'tftp' in xinetd_services.stdout_lines"
   failed_when: no
